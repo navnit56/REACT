@@ -1,0 +1,52 @@
+import { useEffect, useState } from "react"
+import './ToDoApp.css'
+
+function ToDoApp (){
+
+    const[task, setTask] = useState([]);
+    const[inputValue, setInputValues] = useState("");
+    const[error , setError] = useState("");
+
+    
+   
+    const HandleAddTask = () => {
+        if(inputValue !== "" && (!task.includes(inputValue))){
+        setTask([...task , inputValue] );
+        }else if( task.includes(inputValue)){
+          setError(" Cant add duplicate vaalues")
+        }
+        setTimeout(() =>{
+            setError("");
+        },2000)
+    }
+
+   
+
+    console.log(task)
+
+    return(
+        <>
+        <div className="main">
+            <div className="hero">
+                <div className="input">
+                    <input type="text" name="taskInput" id="taskInput" value={inputValue} onChange={(e)=>setInputValues(e.target.value)}  />
+                    <div className="error" >
+                    {error}
+                    </div>
+                    <input type="button" className="addtaskbtn" value="Add" onClick={HandleAddTask} />
+                </div>
+                <div className="tasks">
+                    <div className="task">
+                        <ul>
+                           {task.map((item , index) => (
+                                <li key={index}>{item}</li>
+                            ))}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        </>
+    )
+}export default ToDoApp
