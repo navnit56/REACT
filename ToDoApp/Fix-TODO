@@ -1,0 +1,93 @@
+import { useEffect, useState } from "react"
+import './ToDoApp.css'
+
+function ToDoApp() {
+
+    const [task, setTask] = useState([]);
+    const [inputValue, setInputValues] = useState("");
+    const [error, setError] = useState("");
+    const [editIndex, setEditIndex] = useState(-1);
+
+    const HandleAddTask = () => {
+
+        if (inputValue.trim() === "") return;
+
+        // 🟢 EDIT MODE
+        if (editIndex !== -1) {
+
+            // prevent duplicate except current index
+            const isDuplicate = task.some((item, i) => item === inputValue && i !== editIndex);
+
+            if (isDuplicate) {
+                setError("Can't add duplicate values");
+            } else {
+                const updatedTasks = [...task];
+                updatedTasks[editIndex] = inputValue;
+                setTask(updatedTasks);
+                setEditIndex(-1);
+                setInputValues(""); // clear input
+            }
+
+        } 
+        // 🟢 ADD MODE
+        else {
+            if (task.includes(inputValue)) {
+                setError("Can't add duplicate values");
+            } else {
+                setTask([...task, inputValue]);
+                setInputValues(""); // clear input
+            }
+        }
+
+        setTimeout(() => setError(""), 2000);
+    };
+
+    const HandleRemoveTask = (index) => {
+        const updatedTasks = [...task];
+        updatedTasks.splice(index, 1);
+        setTask(updatedTasks);
+    };
+
+    const HandleEditTask = (index) => {
+        setEditIndex(index);
+        setInputValues(task[index]);
+    };
+
+    return (
+        <>
+            <div className="main">
+                <div className="hero">
+                    <div className="input">
+                        <input
+                            type="text"
+                            className="inputtext"
+                            value={inputValue}
+                            onChange={(e) => setInputValues(e.target.value)}
+                        />
+
+                        <input
+                            type="button"
+                            className="addtaskbtn"
+                            value={editIndex !== -1 ? "Update" : "Add"}
+                            onClick={HandleAddTask}
+                        />
+                    </div>
+
+                    <div className="error">{error}</div>
+
+                    <ul>
+                        {task.map((item, index) => (
+                            <li key={index}>
+                                {item}
+                                <button onClick={() => HandleEditTask(index)}>✎</button>
+                                <button onClick={() => HandleRemoveTask(index)}>🗑️</button>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            </div>
+        </>
+    );
+}
+
+export default ToDoApp;
